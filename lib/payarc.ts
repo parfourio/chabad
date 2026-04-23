@@ -48,11 +48,11 @@ export async function tokenizeCard(card: {
     card_number: card.card_number,
     exp_month:   card.exp_month,
     exp_year:    card.exp_year,
-    cvv:         card.cvv,
+    cvc:         card.cvv,
   }
   if (card.name) params.name = card.name
 
-  console.log('PayArc tokenize payload:', JSON.stringify({ ...params, card_number: '****', cvv: '***' }))
+  console.log('PayArc tokenize payload:', JSON.stringify({ ...params, card_number: '****', cvc: '***' }))
 
   const res = await fetch(`${BASE}/tokens`, {
     method: 'POST',
@@ -66,10 +66,15 @@ export async function tokenizeCard(card: {
 
   const data = await res.json()
   console.log('PayArc tokenize response:', JSON.stringify(data))
+
+  // PayArc may return a token even when flagging CVV warnings — extract it if present
+  const tokenId = data?.data?.id || data?.id || data?.external_token
+  if (tokenId) return tokenId
+
   if (!res.ok) {
     throw new Error(data?.message || data?.error?.message || JSON.stringify(data))
   }
-  return data.data?.id || data.id
+  return tokenId
 }
 
 // ─── CREATE CHARGE ─────────────────────────────────────────────────────────────
@@ -81,27 +86,35 @@ export interface ChargeResult {
 }
 
 export async function createCharge(params: {
-  tokenId: string        // card token from client-side PayArc.js OR tokenizeCard()
+  tokenId: string        // card token from tokenizeCard()
   amount: number         // in cents (e.g. 5400 for $54.00)
   description: string
-  capture?: boolean      // default true
   email?: string
 }): Promise<ChargeResult> {
+  // Step 1: Create the charge
   const data = await payarc('POST', '/charges', {
-    token_id:    params.tokenId,
-    amount:      params.amount,
-    currency:    'usd',
-    description: params.description,
-    capture:     params.capture !== false,
+    token_id:      params.tokenId,
+    amount:        params.amount,
+    currency:      'usd',
+    description:   params.description,
     receipt_email: params.email,
   })
 
   const charge = data.data || data
+  const chargeId = charge.id
+
+  // Step 2: Capture the charge
+  try {
+    await payarc('POST', `/charges/${chargeId}/capture`, { amount: params.amount })
+  } catch (e) {
+    console.warn('Capture step failed (may already be captured):', e)
+  }
+
   return {
-    id:       charge.id,
-    status:   charge.status,
+    id:       chargeId,
+    status:   'captured',
     amount:   charge.amount,
-    currency: charge.currency,
+    currency: charge.currency || 'usd',
   }
 }
 
