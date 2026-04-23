@@ -109,8 +109,7 @@ export async function createEventRegistration(params: {
     StageName:   'Closed Won',
     CloseDate:   new Date().toISOString().split('T')[0],
     Amount:      params.amount,
-    Description: `Event registration for ${params.guests} guest(s). Source: SVJewishCenter.com`,
-    ContactId__c: params.contactId, // standard lookup if you have it
+    Description: `Event registration for ${params.guests} guest(s). Contact ID: ${params.contactId}. Source: SVJewishCenter.com`,
     Type:        'Existing Customer - Upgrade',
     LeadSource:  'Web',
   })
