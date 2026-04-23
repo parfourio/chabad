@@ -58,7 +58,7 @@ export async function tokenizeCard(card: {
       card_number:      card.card_number,
       exp_month:        card.exp_month,
       exp_year,
-      cvv:              card.cvv,
+      cvv2:             card.cvv,
       card_holder_name: card.card_holder_name || '',
     }).toString(),
   })
