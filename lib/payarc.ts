@@ -48,7 +48,7 @@ export async function tokenizeCard(card: {
     card_number: card.card_number,
     exp_month:   card.exp_month,
     exp_year:    card.exp_year,
-    cvc:         card.cvv,
+    cvv:         card.cvv,
   }
   if (card.name) params.name = card.name
 
