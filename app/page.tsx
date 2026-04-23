@@ -41,39 +41,34 @@ export default async function Home() {
   return (
     <div>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-chabad-dark">
-        {/* Bokeh decorations */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[
-            'top-8 left-12 w-48 h-48 bg-chabad-amber/10',
-            'top-24 right-16 w-32 h-32 bg-chabad-gold/8',
-            'bottom-16 left-1/3 w-64 h-64 bg-chabad-rust/10',
-            'top-1/2 right-8 w-40 h-40 bg-chabad-amber/8',
-          ].map((cls, i) => (
-            <div key={i} className={`absolute rounded-full blur-3xl ${cls}`} />
-          ))}
-        </div>
+      <section className="relative h-[600px] flex items-center overflow-hidden">
+        {/* Background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('https://w2.chabad.org/media/images/1294/Jdkn12942782.jpg')" }}
+        />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-chabad-dark/85 via-chabad-dark/55 to-chabad-dark/25" />
 
-        <div className="relative max-w-4xl mx-auto px-6 py-28 text-center">
-          <p className="text-chabad-ltgold text-sm tracking-widest uppercase mb-4">B&quot;H</p>
-          <p className="text-chabad-cream/70 text-lg italic mb-3">
-            You&apos;re invited to a magical evening of inspiration, community &amp; joy
-          </p>
-          <h1 className="text-6xl md:text-7xl font-bold text-chabad-cream leading-tight mb-3">
-            Chabad<br />
-            <span className="text-chabad-ltgold italic">Sonoma Valley</span>
+        <div className="relative z-10 px-8 md:px-16 max-w-2xl">
+          <div className="inline-block bg-chabad-amber/20 border border-chabad-amber/50 text-chabad-ltgold text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded mb-6">
+            Sonoma Valley · Est. 2007
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-5">
+            Everyone is<br />
+            <span className="text-chabad-ltgold italic">Welcome Here.</span>
           </h1>
-          <p className="text-chabad-cream/60 text-lg mb-10 max-w-xl mx-auto">
-            A warm, welcoming Jewish community in the heart of wine country — where every Friday night feels like coming home.
+          <p className="text-white/80 text-lg leading-relaxed mb-8 max-w-md">
+            A warm, open-door community for every Jewish person in the Sonoma Valley — regardless of background, philosophy, or level of observance.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-wrap gap-4">
             <Link href="/events"
-              className="px-8 py-3 bg-chabad-amber text-chabad-dark font-bold rounded hover:bg-chabad-gold transition">
-              Upcoming Events →
+              className="px-7 py-3.5 bg-chabad-amber text-chabad-dark font-bold rounded hover:bg-chabad-gold transition">
+              Upcoming Events
             </Link>
-            <Link href="/donate"
-              className="px-8 py-3 border border-chabad-gold/50 text-chabad-ltgold rounded hover:border-chabad-gold hover:text-chabad-cream transition">
-              Support Our Community
+            <Link href="/about"
+              className="px-7 py-3.5 border-2 border-white/50 text-white font-semibold rounded hover:border-white hover:bg-white/10 transition">
+              Meet the Rabbi
             </Link>
           </div>
         </div>
