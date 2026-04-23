@@ -13,13 +13,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Tokenize card via PayArc (keeps raw card data off our servers in logs)
+    // Tokenize card via PayArc
     const tokenId = await tokenizeCard({
-      card_number: cardNumber.replace(/\s/g, ''),
-      exp_month:   expMonth,
-      exp_year:    expYear,
+      card_number:      cardNumber.replace(/\s/g, ''),
+      exp_month:        expMonth,
+      exp_year:         expYear,
       cvv,
-      card_holder_name: `${firstName} ${lastName}`,
+      name:             `${firstName} ${lastName}`,
     })
     if (amount < 5 || amount > 100000) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
