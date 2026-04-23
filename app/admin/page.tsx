@@ -20,9 +20,9 @@ interface Announcement {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  announcement:    'bg-chabad-amber text-chabad-dark',
+  announcement:    'bg-chabad-amber text-white',
   event:           'bg-blue-500 text-white',
-  shabbat_message: 'bg-yellow-500 text-black',
+  shabbat_message: 'bg-yellow-500 text-chabad-text',
   schedule_change: 'bg-orange-500 text-white',
 }
 
@@ -68,101 +68,104 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-16">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-chabad-cream">Live Site Updates</h1>
-          <p className="text-chabad-cream/50 mt-1">
-            WhatsApp → Claude AI → Supabase → Site (in real time)
-          </p>
-        </div>
-        <div className="text-right">
-          <div className={`flex items-center gap-2 ${pulse ? 'text-green-400' : 'text-chabad-cream/40'} transition-colors`}>
-            <div className={`w-2 h-2 rounded-full ${pulse ? 'bg-green-400 animate-ping' : 'bg-chabad-cream/20'}`} />
-            <span className="text-xs font-mono">{pulse ? 'New update!' : 'Listening...'}</span>
+    <div className="bg-chabad-cream min-h-screen">
+      <div className="max-w-4xl mx-auto px-6 py-16">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <p className="text-chabad-amber text-xs tracking-widest uppercase font-bold mb-1">Control Center</p>
+            <h1 className="text-3xl font-bold text-chabad-brown font-serif">Live Site Updates</h1>
+            <p className="text-chabad-text-mid mt-1 text-sm">
+              WhatsApp → Claude AI → Supabase → Site (in real time)
+            </p>
           </div>
-          {lastUpdate && (
-            <div className="text-xs text-chabad-cream/30 mt-1">
-              Last update: {lastUpdate.toLocaleTimeString()}
+          <div className="text-right">
+            <div className={`flex items-center gap-2 ${pulse ? 'text-green-600' : 'text-chabad-text-muted'} transition-colors`}>
+              <div className={`w-2 h-2 rounded-full ${pulse ? 'bg-green-500 animate-ping' : 'bg-chabad-text-muted/30'}`} />
+              <span className="text-xs font-mono">{pulse ? 'New update!' : 'Listening...'}</span>
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* How it works banner */}
-      <div className="bg-chabad-brown/40 border border-chabad-gold/20 rounded-xl p-5 mb-10">
-        <h2 className="text-sm font-bold text-chabad-ltgold uppercase tracking-widest mb-3">How This Works</h2>
-        <div className="grid grid-cols-4 gap-4 text-center">
-          {[
-            { icon: '💬', step: '1', label: 'Rabbi texts WhatsApp', sub: 'Natural language, any format' },
-            { icon: '🤖', step: '2', label: 'Claude AI parses it', sub: 'Identifies type, title, content' },
-            { icon: '⚡', step: '3', label: 'Supabase stores it', sub: 'Real-time database update' },
-            { icon: '🌐', step: '4', label: 'Site updates live', sub: 'No login required' },
-          ].map(s => (
-            <div key={s.step}>
-              <div className="text-2xl mb-1">{s.icon}</div>
-              <div className="text-xs font-bold text-chabad-ltgold mb-0.5">{s.step}. {s.label}</div>
-              <div className="text-xs text-chabad-cream/40">{s.sub}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Demo: simulate a WhatsApp message */}
-      <SimulatePanel onNew={fetchAll} />
-
-      {/* Announcements feed */}
-      <div className="mt-10">
-        <h2 className="text-xl font-bold text-chabad-cream mb-5">Live Feed</h2>
-
-        {loading ? (
-          <div className="text-center text-chabad-cream/40 py-12">Loading...</div>
-        ) : announcements.length === 0 ? (
-          <div className="text-center py-16 border border-dashed border-chabad-gold/20 rounded-xl">
-            <div className="text-4xl mb-3">💬</div>
-            <p className="text-chabad-cream/40">No announcements yet.</p>
-            <p className="text-sm text-chabad-cream/30 mt-1">Send a WhatsApp message to get started.</p>
+            {lastUpdate && (
+              <div className="text-xs text-chabad-text-muted mt-1">
+                Last update: {lastUpdate.toLocaleTimeString()}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="space-y-4">
-            {announcements.map((a, i) => (
-              <div key={a.id}
-                className={`bg-chabad-brown/30 border rounded-xl p-5 transition ${
-                  i === 0 && pulse ? 'border-chabad-gold shadow-lg shadow-chabad-gold/10' : 'border-chabad-gold/20'
-                }`}>
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className={`text-xs font-bold px-2 py-0.5 rounded ${TYPE_COLORS[a.type] || 'bg-chabad-gold/20 text-chabad-cream'}`}>
-                        {a.type.replace('_', ' ')}
-                      </span>
-                      <span className="text-xs text-chabad-cream/30">
-                        via {a.source} · {new Date(a.created_at).toLocaleString()}
-                      </span>
-                    </div>
-                    <h3 className="font-bold text-chabad-cream mb-1">{a.title}</h3>
-                    <p className="text-sm text-chabad-cream/70 leading-relaxed">{a.content}</p>
-                    {(a.event_date || a.event_time) && (
-                      <div className="mt-2 text-xs text-chabad-ltgold">
-                        {a.event_date && <span>📅 {a.event_date}  </span>}
-                        {a.event_time && <span>🕐 {a.event_time}</span>}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <div className="text-xs text-chabad-cream/20 font-mono">
-                      Raw WhatsApp:
-                    </div>
-                    <div className="text-xs text-chabad-cream/30 max-w-48 text-right italic">
-                      "{a.raw_message}"
-                    </div>
-                  </div>
-                </div>
+        </div>
+
+        {/* How it works banner */}
+        <div className="bg-white border border-chabad-brown/15 rounded-xl p-5 mb-10 shadow-sm">
+          <h2 className="text-sm font-bold text-chabad-amber uppercase tracking-widest mb-3">How This Works</h2>
+          <div className="grid grid-cols-4 gap-4 text-center">
+            {[
+              { icon: '💬', step: '1', label: 'Rabbi texts WhatsApp', sub: 'Natural language, any format' },
+              { icon: '🤖', step: '2', label: 'Claude AI parses it', sub: 'Identifies type, title, content' },
+              { icon: '⚡', step: '3', label: 'Supabase stores it', sub: 'Real-time database update' },
+              { icon: '🌐', step: '4', label: 'Site updates live', sub: 'No login required' },
+            ].map(s => (
+              <div key={s.step}>
+                <div className="text-2xl mb-1">{s.icon}</div>
+                <div className="text-xs font-bold text-chabad-brown mb-0.5">{s.step}. {s.label}</div>
+                <div className="text-xs text-chabad-text-muted">{s.sub}</div>
               </div>
             ))}
           </div>
-        )}
+        </div>
+
+        {/* Demo: simulate a WhatsApp message */}
+        <SimulatePanel onNew={fetchAll} />
+
+        {/* Announcements feed */}
+        <div className="mt-10">
+          <h2 className="text-xl font-bold text-chabad-brown mb-5 font-serif">Live Feed</h2>
+
+          {loading ? (
+            <div className="text-center text-chabad-text-muted py-12">Loading...</div>
+          ) : announcements.length === 0 ? (
+            <div className="text-center py-16 border border-dashed border-chabad-brown/20 rounded-xl">
+              <div className="text-4xl mb-3">💬</div>
+              <p className="text-chabad-text-muted">No announcements yet.</p>
+              <p className="text-sm text-chabad-text-muted mt-1">Send a WhatsApp message to get started.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {announcements.map((a, i) => (
+                <div key={a.id}
+                  className={`bg-white border rounded-xl p-5 transition shadow-sm ${
+                    i === 0 && pulse ? 'border-chabad-amber shadow-md' : 'border-chabad-brown/15'
+                  }`}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${TYPE_COLORS[a.type] || 'bg-chabad-ltgold text-chabad-brown'}`}>
+                          {a.type.replace('_', ' ')}
+                        </span>
+                        <span className="text-xs text-chabad-text-muted">
+                          via {a.source} · {new Date(a.created_at).toLocaleString()}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-chabad-brown mb-1">{a.title}</h3>
+                      <p className="text-sm text-chabad-text-mid leading-relaxed">{a.content}</p>
+                      {(a.event_date || a.event_time) && (
+                        <div className="mt-2 text-xs text-chabad-amber font-semibold">
+                          {a.event_date && <span>📅 {a.event_date}  </span>}
+                          {a.event_time && <span>🕐 {a.event_time}</span>}
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-xs text-chabad-text-muted font-mono">
+                        Raw WhatsApp:
+                      </div>
+                      <div className="text-xs text-chabad-text-muted max-w-48 text-right italic">
+                        &ldquo;{a.raw_message}&rdquo;
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -184,7 +187,6 @@ function SimulatePanel({ onNew }: { onNew: () => void }) {
     if (!msg.trim()) return
     setState('loading')
     try {
-      // Directly hit the WhatsApp webhook with a simulated payload
       const body = new URLSearchParams({
         From: 'whatsapp:+15551234567',
         Body: msg,
@@ -204,17 +206,17 @@ function SimulatePanel({ onNew }: { onNew: () => void }) {
   }
 
   return (
-    <div className="bg-chabad-dark border border-chabad-gold/30 rounded-xl p-6">
-      <h3 className="text-sm font-bold text-chabad-ltgold uppercase tracking-widest mb-4">
-        🎭 Demo: Simulate a WhatsApp Message
+    <div className="bg-white border border-chabad-brown/15 rounded-xl p-6 shadow-sm">
+      <h3 className="text-sm font-bold text-chabad-brown uppercase tracking-widest mb-2">
+        Demo: Simulate a WhatsApp Message
       </h3>
-      <p className="text-xs text-chabad-cream/50 mb-4">
+      <p className="text-xs text-chabad-text-muted mb-4">
         In production, Rabbi Wenger texts from his phone. For the demo, paste a message below and hit Send.
       </p>
       <div className="flex flex-wrap gap-2 mb-4">
         {EXAMPLES.map((ex, i) => (
           <button key={i} onClick={() => setMsg(ex)}
-            className="text-xs px-2 py-1 border border-chabad-gold/20 text-chabad-cream/60 hover:text-chabad-cream hover:border-chabad-gold/50 rounded transition">
+            className="text-xs px-2 py-1 border border-chabad-brown/20 text-chabad-text-mid hover:text-chabad-brown hover:border-chabad-amber rounded transition">
             Example {i + 1}
           </button>
         ))}
@@ -224,11 +226,11 @@ function SimulatePanel({ onNew }: { onNew: () => void }) {
           value={msg}
           onChange={e => setMsg(e.target.value)}
           placeholder="Type a message as if from Rabbi Wenger..."
-          className="flex-1 bg-chabad-brown/30 border border-chabad-gold/20 rounded px-3 py-2 text-chabad-cream text-sm focus:border-chabad-gold outline-none resize-none h-20"
+          className="flex-1 bg-chabad-cream border border-chabad-brown/20 rounded px-3 py-2 text-chabad-text text-sm focus:border-chabad-amber outline-none resize-none h-20"
         />
         <button onClick={simulate} disabled={state === 'loading' || !msg.trim()}
-          className="px-5 py-2 bg-chabad-amber text-chabad-dark font-bold rounded hover:bg-chabad-gold disabled:opacity-50 transition self-start">
-          {state === 'loading' ? '...' : state === 'done' ? '✓ Sent!' : 'Send →'}
+          className="px-5 py-2 bg-chabad-brown text-white font-bold rounded hover:bg-chabad-dark disabled:opacity-50 transition self-start">
+          {state === 'loading' ? '...' : state === 'done' ? '✓ Sent!' : 'Send'}
         </button>
       </div>
     </div>
