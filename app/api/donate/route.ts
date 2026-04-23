@@ -12,14 +12,19 @@ export async function POST(req: Request) {
     if (!firstName || !lastName || !email || !amount || !cardNumber) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
+    if (!cvv) {
+      return NextResponse.json({ error: 'CVV is required' }, { status: 400 })
+    }
+
+    console.log('Donate API received:', { cardNumber: '****', expMonth, expYear, cvvPresent: !!cvv, cvvLength: cvv?.length })
 
     // Tokenize card via PayArc
     const tokenId = await tokenizeCard({
-      card_number:      cardNumber.replace(/\s/g, ''),
-      exp_month:        expMonth,
-      exp_year:         expYear,
-      cvv,
-      name:             `${firstName} ${lastName}`,
+      card_number: cardNumber.replace(/\s/g, ''),
+      exp_month:   expMonth,
+      exp_year:    expYear,
+      cvv:         String(cvv),
+      name:        `${firstName} ${lastName}`,
     })
     if (amount < 5 || amount > 100000) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
