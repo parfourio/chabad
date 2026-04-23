@@ -167,13 +167,13 @@ export default function DonatePage() {
                 Payment — Secured by PayArc
               </label>
               <div className="space-y-3">
+                <input placeholder="Name on card" value={card.name}
+                  onChange={e => setCard(c => ({...c, name: e.target.value}))}
+                  className="w-full bg-chabad-dark border border-chabad-gold/30 rounded px-3 py-2 text-chabad-cream text-sm focus:border-chabad-gold outline-none" />
                 <input placeholder="Card number" value={card.number}
                   onChange={e => setCard(c => ({...c, number: e.target.value}))}
                   className="w-full bg-chabad-dark border border-chabad-gold/30 rounded px-3 py-2 text-chabad-cream text-sm focus:border-chabad-gold outline-none font-mono tracking-widest"
                   maxLength={19} />
-                <input placeholder="Name on card" value={card.name}
-                  onChange={e => setCard(c => ({...c, name: e.target.value}))}
-                  className="w-full bg-chabad-dark border border-chabad-gold/30 rounded px-3 py-2 text-chabad-cream text-sm focus:border-chabad-gold outline-none" />
                 <div className="grid grid-cols-3 gap-3">
                   <input placeholder="MM" maxLength={2} value={card.expMonth}
                     onChange={e => setCard(c => ({...c, expMonth: e.target.value}))}
