@@ -45,8 +45,6 @@ export default function DonatePage() {
           amount:      finalAmount,
           designation,
           type,
-          // Card data — in production use PayArc.js token instead
-          tokenId:     'tok_demo_' + Date.now(), // Replace with real PayArc token
           cardNumber:  card.number,
           expMonth:    card.expMonth,
           expYear:     card.expYear,

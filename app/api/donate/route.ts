@@ -1,16 +1,26 @@
 import { NextResponse } from 'next/server'
-import { createCharge, createCustomerAndCharge } from '@/lib/payarc'
+import { tokenizeCard, createCharge, createCustomerAndCharge } from '@/lib/payarc'
 import { upsertContact, createDonationOpportunity } from '@/lib/salesforce'
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { firstName, lastName, email, phone, amount, designation, type, tokenId } = body
+    const { firstName, lastName, email, phone, amount, designation, type,
+            cardNumber, expMonth, expYear, cvv } = body
 
     // Validate
-    if (!firstName || !lastName || !email || !amount || !tokenId) {
+    if (!firstName || !lastName || !email || !amount || !cardNumber) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
+
+    // Tokenize card via PayArc (keeps raw card data off our servers in logs)
+    const tokenId = await tokenizeCard({
+      card_number: cardNumber.replace(/\s/g, ''),
+      exp_month:   expMonth,
+      exp_year:    expYear,
+      cvv,
+      card_holder_name: `${firstName} ${lastName}`,
+    })
     if (amount < 5 || amount > 100000) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
     }
