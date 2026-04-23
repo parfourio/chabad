@@ -46,6 +46,17 @@ export async function tokenizeCard(card: {
   // PayArc expects 2-digit year and card_source: INTERNET
   const exp_year = card.exp_year.length === 4 ? card.exp_year.slice(-2) : card.exp_year
 
+  const params: Record<string, string> = {
+    card_source:  'INTERNET',
+    card_number:  card.card_number,
+    exp_month:    card.exp_month,
+    exp_year,
+    cvv2:         card.cvv,
+  }
+  if (card.card_holder_name) params.card_holder_name = card.card_holder_name
+
+  console.log('PayArc tokenize payload:', JSON.stringify({ ...params, card_number: '****', cvv2: '***' }))
+
   const res = await fetch(`${BASE}/tokens`, {
     method: 'POST',
     headers: {
@@ -53,19 +64,13 @@ export async function tokenizeCard(card: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Accept:         'application/json',
     },
-    body: new URLSearchParams({
-      card_source:      'INTERNET',
-      card_number:      card.card_number,
-      exp_month:        card.exp_month,
-      exp_year,
-      cvv2:             card.cvv,
-      card_holder_name: card.card_holder_name || '',
-    }).toString(),
+    body: new URLSearchParams(params).toString(),
   })
 
   const data = await res.json()
+  console.log('PayArc tokenize response:', JSON.stringify(data))
   if (!res.ok) {
-    throw new Error(JSON.stringify(data))
+    throw new Error(data?.message || data?.error?.message || JSON.stringify(data))
   }
   return data.data?.id || data.id
 }
