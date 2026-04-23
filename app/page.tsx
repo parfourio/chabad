@@ -1,5 +1,5 @@
 import { getShabbatTimes } from '@/lib/hebcal'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import Link from 'next/link'
 
 const EVENTS = [
