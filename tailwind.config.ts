@@ -10,13 +10,17 @@ const config: Config = {
     extend: {
       colors: {
         chabad: {
-          dark:    '#1C0800',
-          brown:   '#3D1A00',
-          amber:   '#C87020',
-          gold:    '#D4A017',
-          ltgold:  '#E8C878',
-          cream:   '#F5E8C8',
-          rust:    '#8B3800',
+          dark:        '#4a1520',   // wine-dark  — footer, deep accents
+          brown:       '#6b2233',   // wine       — headings, buttons, nav
+          amber:       '#b8811f',   // gold       — CTAs, decorative highlights
+          gold:        '#c9953a',   // gold-mid   — icon accents
+          ltgold:      '#f5f0e8',   // off-white  — subtle section backgrounds
+          cream:       '#faf8f4',   // cream      — main page background
+          'cream-dk':  '#ede8df',   // cream-dark — section alternates
+          rust:        '#8c2d3e',   // wine-mid   — hover states
+          text:        '#1a0a05',   // body text  — near black
+          'text-mid':  '#2e1508',   // secondary text — dark espresso
+          'text-muted':'#6b4c35',   // muted text — warm medium brown
         },
       },
       fontFamily: {

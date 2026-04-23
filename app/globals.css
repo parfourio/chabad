@@ -5,11 +5,11 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #1C0800;
-  color: #F5E8C8;
+  background-color: #faf8f4;
+  color: #1a0a05;
   font-family: Georgia, Cambria, serif;
 }
 
 .gold-rule {
-  @apply border-t border-chabad-gold/40;
+  @apply border-t border-chabad-amber/40;
 }

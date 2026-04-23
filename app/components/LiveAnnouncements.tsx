@@ -31,17 +31,18 @@ export default function LiveAnnouncements({ initial }: { initial: Announcement[]
   if (announcements.length === 0) return null
 
   return (
-    <section className="bg-chabad-ltgold border-y border-chabad-amber/20">
+    <section className="bg-white border-t border-chabad-brown/10">
       <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="flex items-center gap-3 mb-8">
-          <p className="text-chabad-amber text-xs tracking-widest uppercase font-bold">From the Rabbi</p>
+        <p className="text-chabad-amber text-xs tracking-widest uppercase font-bold mb-2">From the Rabbi</p>
+        <div className="flex items-center gap-3 mb-2">
           <h2 className="text-3xl font-bold text-chabad-brown font-serif">Community Updates</h2>
           <span className="text-xs bg-chabad-amber text-white px-2 py-1 rounded font-bold animate-pulse">Live</span>
         </div>
+        <div className="w-12 h-0.5 bg-chabad-amber mb-10" />
         <div className="grid md:grid-cols-3 gap-5">
           {announcements.map(a => (
             <div key={a.id}
-              className="bg-white border border-chabad-brown/10 rounded-xl p-5 shadow-sm">
+              className="bg-chabad-cream border border-chabad-brown/10 rounded-xl p-5">
               <div className="text-xs text-chabad-amber uppercase tracking-widest font-bold mb-2">
                 {a.type.replace('_', ' ')}
               </div>
