@@ -39,11 +39,34 @@ async function payarc(method: string, path: string, body?: object) {
 export async function tokenizeCard(card: {
   card_number: string
   exp_month: string   // "07"
-  exp_year: string    // "2026"
+  exp_year: string    // "2027" or "27" — we normalize below
   cvv: string
   card_holder_name?: string
 }): Promise<string> {
-  const data = await payarc('POST', '/tokens', card)
+  // PayArc expects 2-digit year and card_source: INTERNET
+  const exp_year = card.exp_year.length === 4 ? card.exp_year.slice(-2) : card.exp_year
+
+  const res = await fetch(`${BASE}/tokens`, {
+    method: 'POST',
+    headers: {
+      Authorization:  `Bearer ${KEY}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Accept:         'application/json',
+    },
+    body: new URLSearchParams({
+      card_source:      'INTERNET',
+      card_number:      card.card_number,
+      exp_month:        card.exp_month,
+      exp_year,
+      cvv:              card.cvv,
+      card_holder_name: card.card_holder_name || '',
+    }).toString(),
+  })
+
+  const data = await res.json()
+  if (!res.ok) {
+    throw new Error(JSON.stringify(data))
+  }
   return data.data?.id || data.id
 }
 
