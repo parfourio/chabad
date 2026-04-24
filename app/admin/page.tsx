@@ -31,6 +31,21 @@ export default function AdminPage() {
   const [loading, setLoading]             = useState(true)
   const [lastUpdate, setLastUpdate]       = useState<Date | null>(null)
   const [pulse, setPulse]                 = useState(false)
+  const [deleting, setDeleting]           = useState<string | null>(null)
+
+  async function deleteAnnouncement(id: string) {
+    if (!confirm('Remove this announcement from the site?')) return
+    setDeleting(id)
+    try {
+      const res = await fetch(`/api/announcements/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Delete failed')
+      setAnnouncements(prev => prev.filter(a => a.id !== id))
+    } catch (err) {
+      alert('Could not delete — please try again.')
+    } finally {
+      setDeleting(null)
+    }
+  }
 
   // Initial fetch
   useEffect(() => {
@@ -152,10 +167,14 @@ export default function AdminPage() {
                         </div>
                       )}
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="text-xs text-chabad-text-muted font-mono">
-                        Raw WhatsApp:
-                      </div>
+                    <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                      <button
+                        onClick={() => deleteAnnouncement(a.id)}
+                        disabled={deleting === a.id}
+                        className="text-xs px-3 py-1.5 border border-red-200 text-red-500 hover:bg-red-50 hover:border-red-400 rounded transition disabled:opacity-40 font-medium">
+                        {deleting === a.id ? 'Removing...' : 'Delete'}
+                      </button>
+                      <div className="text-xs text-chabad-text-muted font-mono">Raw WhatsApp:</div>
                       <div className="text-xs text-chabad-text-muted max-w-48 text-right italic">
                         &ldquo;{a.raw_message}&rdquo;
                       </div>
